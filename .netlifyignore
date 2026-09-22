@@ -1,0 +1,7 @@
+node_modules/
+.next/
+data/
+outputs/**/node_modules/
+outputs/mock-2025/preview.png
+outputs/mock-2025/*.inspect.ndjson
+*.log

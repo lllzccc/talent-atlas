@@ -1,0 +1,28 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {NextRequest} from 'next/server';
+test('API完整流程：持久化、并发校准、模式切换、导入与年度归档',async()=>{
+ await fs.mkdir('data',{recursive:true});const directory=await fs.mkdtemp(path.resolve('data','api-test-'));process.env.TALENT_DATA_DIR=directory;delete process.env.DATABASE_URL;delete process.env.APP_ACCESS_TOKEN;
+ const {GET,POST}=await import('../app/api/[action]/route');
+ const context=(action:string)=>({params:Promise.resolve({action})});
+ const read=async()=>{const response=await GET(new NextRequest('http://127.0.0.1:3000/api/state',{headers:{host:'127.0.0.1:3000'}}),context('state'));assert.equal(response.status,200);return response.json();};
+ const post=async(action:string,body:unknown,origin='http://127.0.0.1:3000')=>POST(new NextRequest(`http://127.0.0.1:3000/api/${action}`,{method:'POST',headers:{host:'127.0.0.1:3000',origin,'content-type':'application/json'},body:JSON.stringify(body)}),context(action));
+ let s=await read();assert.equal(s.employees.length,120);
+ assert.equal((await post('analyze',{revision:s.revision,target:'org:all'},'https://foreign.example')).status,400);
+ assert.equal((await post('analyze',{revision:s.revision,target:'org:all'})).status,200);s=await read();assert.match(s.analyses['org:all'].text,/Mock/);
+ const current=s.results[0];const p={revision:s.revision,employeeId:current.employee_id,to:current.grid==='high_high'?'low_low':'high_high',reason:'测试用例：补充评审依据',confirmed:true};
+ assert.equal((await post('calibrate',{...p,reason:''})).status,400);
+ assert.equal((await post('calibrate',{...p,to:'constructor'})).status,400);
+ const statuses=await Promise.all([post('calibrate',p),post('calibrate',p)]);assert.deepEqual(statuses.map(r=>r.status).sort(),[200,400]);s=await read();assert.equal(s.audits.length,1);assert.equal(s.results[0].grid,p.to);
+ assert.equal((await post('ai-config',{revision:s.revision,config:{...s.ai,mode:'api'}})).status,200);s=await read();assert.equal((await post('analyze',{revision:s.revision,target:'org:all'})).status,200);s=await read();assert.match(s.analyses['org:all'].text,/API 接入预览/);
+ assert.equal((await post('ai-config',{revision:s.revision,config:{...s.ai,mode:'mock'}})).status,200);s=await read();
+ const before=s.revision;const b=await fs.readFile('outputs/mock-2025/员工导入.xlsx');const form=new FormData();form.set('file',new File([b],'员工导入.xlsx'));form.set('preview','true');const preview=await POST(new NextRequest('http://127.0.0.1:3000/api/import',{method:'POST',headers:{host:'127.0.0.1:3000'},body:form}),context('import'));assert.equal(preview.status,200);assert.equal((await preview.json()).count,120);assert.equal((await read()).revision,before);
+ assert.equal((await post('employees',{revision:s.revision,cycle:s.cycle,employees:[...s.employees,s.employees[0]]})).status,400);assert.equal((await read()).revision,before);
+ assert.equal((await post('employees',{revision:s.revision,cycle:s.cycle,employees:s.employees})).status,200);s=await read();assert.equal(s.results[0].calibrated,false);assert.equal(s.audits.length,1);
+ assert.equal((await post('cycle',{revision:s.revision,year:2026})).status,200);s=await read();assert.equal(s.cycle,'REVIEW-2026');assert.equal(s.employees.length,0);assert.equal(s.archives[0].employees.length,120);assert.equal(s.archives[0].audits.length,1);assert.equal((await post('cycle',{revision:s.revision,year:2025})).status,400);
+ assert.equal(JSON.parse(await fs.readFile(path.join(directory,'store.json'),'utf8')).cycle,'REVIEW-2026');
+ process.env.APP_ACCESS_TOKEN='test-only-token';assert.equal((await GET(new NextRequest('http://127.0.0.1:3000/api/state'),context('state'))).status,401);delete process.env.APP_ACCESS_TOKEN;
+ const resolved=path.resolve(directory);assert(resolved.startsWith(path.resolve('data')+path.sep));await fs.rm(resolved,{recursive:true});
+});

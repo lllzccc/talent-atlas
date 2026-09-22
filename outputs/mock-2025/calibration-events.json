@@ -1,0 +1,16 @@
+[
+  {
+    "event_id": "CAL-001",
+    "cycle_id": "REVIEW-2025",
+    "employee_id": "E0001",
+    "from_grid": "P_low__A_low",
+    "to_grid": "P_low__A_high",
+    "reason": "模拟校准：盘点会议补充了跨团队项目评审材料，调整能力档位。",
+    "actor_id": "TEST-HR-001",
+    "actor_name": "测试HR",
+    "confirmed": true,
+    "confirmed_at": "2026-01-15T10:30:00+08:00",
+    "model_version": "1.0",
+    "synthetic": true
+  }
+]

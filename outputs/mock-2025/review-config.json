@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "synthetic": true,
+  "cycle_id": "REVIEW-2025",
+  "snapshot_date": "2025-12-31",
+  "scope": "department_id",
+  "eligibility": "全部120名员工含试用期；仅测试假设",
+  "performance": {
+    "kpi_score": 0.7,
+    "delivery_score": 0.3
+  },
+  "ability": {
+    "assessment_score": 0.5,
+    "manager_score": 0.3,
+    "values_score": 0.2
+  },
+  "axis_ratios": {
+    "high": 0.25,
+    "medium": 0.5,
+    "low": 0.25
+  },
+  "rounding": "最大余数法；余数相同时按medium、high、low优先",
+  "tie_break": "加权分保留2位后降序；同分按employee_id升序",
+  "missing_score": "拒绝计算，先修复；不按0分处理",
+  "suggested_grid_ratios": null,
+  "notes": "绩效权重、取整、同分及纳入规则均为可替换测试假设；九格建议比例待业务配置，不用两个轴比例相乘代替。"
+}

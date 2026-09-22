@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+
+# Next.js App Router is detected by Netlify's Next.js runtime integration.
+# The demo keeps personnel data synthetic and does not require environment secrets.
+[build.environment]
+  NODE_VERSION = "20"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public,max-age=31536000,immutable"

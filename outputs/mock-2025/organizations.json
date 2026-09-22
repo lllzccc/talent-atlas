@@ -1,0 +1,116 @@
+[
+  {
+    "id": "C001",
+    "name": "星澜科技（虚构）",
+    "parent_id": null,
+    "level": 1
+  },
+  {
+    "id": "D1",
+    "name": "研发部",
+    "parent_id": "C001",
+    "level": 2
+  },
+  {
+    "id": "D1-T1",
+    "name": "研发部1组",
+    "parent_id": "D1",
+    "level": 3
+  },
+  {
+    "id": "D1-T2",
+    "name": "研发部2组",
+    "parent_id": "D1",
+    "level": 3
+  },
+  {
+    "id": "D2",
+    "name": "产品部",
+    "parent_id": "C001",
+    "level": 2
+  },
+  {
+    "id": "D2-T1",
+    "name": "产品部1组",
+    "parent_id": "D2",
+    "level": 3
+  },
+  {
+    "id": "D2-T2",
+    "name": "产品部2组",
+    "parent_id": "D2",
+    "level": 3
+  },
+  {
+    "id": "D3",
+    "name": "销售部",
+    "parent_id": "C001",
+    "level": 2
+  },
+  {
+    "id": "D3-T1",
+    "name": "销售部1组",
+    "parent_id": "D3",
+    "level": 3
+  },
+  {
+    "id": "D3-T2",
+    "name": "销售部2组",
+    "parent_id": "D3",
+    "level": 3
+  },
+  {
+    "id": "D4",
+    "name": "客户成功部",
+    "parent_id": "C001",
+    "level": 2
+  },
+  {
+    "id": "D4-T1",
+    "name": "客户成功部1组",
+    "parent_id": "D4",
+    "level": 3
+  },
+  {
+    "id": "D4-T2",
+    "name": "客户成功部2组",
+    "parent_id": "D4",
+    "level": 3
+  },
+  {
+    "id": "D5",
+    "name": "运营部",
+    "parent_id": "C001",
+    "level": 2
+  },
+  {
+    "id": "D5-T1",
+    "name": "运营部1组",
+    "parent_id": "D5",
+    "level": 3
+  },
+  {
+    "id": "D5-T2",
+    "name": "运营部2组",
+    "parent_id": "D5",
+    "level": 3
+  },
+  {
+    "id": "D6",
+    "name": "战略部",
+    "parent_id": "C001",
+    "level": 2
+  },
+  {
+    "id": "D6-T1",
+    "name": "战略部1组",
+    "parent_id": "D6",
+    "level": 3
+  },
+  {
+    "id": "D6-T2",
+    "name": "战略部2组",
+    "parent_id": "D6",
+    "level": 3
+  }
+]
