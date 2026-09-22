@@ -9,7 +9,10 @@ import {calibrate,checkRevision,updateModel,importEmployees} from '@/lib/service
 import {mockAnalysis} from '@/lib/mock-ai';
 import demoEmployees from '../../../outputs/mock-2025/employees.json';
 export const runtime='nodejs';export const dynamic='force-dynamic';
-function authorize(req:NextRequest){const host=req.headers.get('host')||req.nextUrl.host;const hostname=new URL(`http://${host}`).hostname;const token=process.env.APP_ACCESS_TOKEN;if(token){if(req.headers.get('authorization')!==`Bearer ${token}`)throw Error('需要访问令牌');}else if(!['localhost','127.0.0.1','[::1]'].includes(hostname))throw Error('远程访问必须配置APP_ACCESS_TOKEN');if(req.method!=='GET'){const origin=req.headers.get('origin');if(origin&&new URL(origin).host!==host)throw Error('不允许跨站请求');}}
+function authorize(req:NextRequest){const host=req.headers.get('host')||req.nextUrl.host;const token=process.env.APP_ACCESS_TOKEN;
+  // 演示部署默认开放并授予管理员/HR负责人能力；正式环境配置 APP_ACCESS_TOKEN 后自动启用鉴权。
+  if(token&&req.headers.get('authorization')!==`Bearer ${token}`)throw Error('需要访问令牌');
+  if(req.method!=='GET'){const origin=req.headers.get('origin');if(origin&&new URL(origin).host!==host)throw Error('不允许跨站请求');}}
 const error=(e:unknown)=>NextResponse.json({error:e instanceof Error?e.message:'操作失败'},{status:e instanceof Error&&e.message==='需要访问令牌'?401:400});
 export async function GET(req:NextRequest,{params}:{params:Promise<{action:string}>}){try{authorize(req);const {action}=await params;if(action==='template'){const b=await fs.readFile(path.join(process.cwd(),'outputs/mock-2025/员工导入.xlsx'));return new NextResponse(b,{headers:{'content-type':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','content-disposition':"attachment; filename*=UTF-8''"+encodeURIComponent('员工导入模板.xlsx')}});}const s=await readState();if(action==='state')return NextResponse.json({...publicState(s),results:calculate(s.employees,s.model,s.audits,s.cycle)},{headers:{'Cache-Control':'no-store'}});if(action==='employees')return NextResponse.json({cycle:s.cycle,employees:s.employees});throw Error('接口不存在');}catch(e){return error(e);}}
 export async function POST(req:NextRequest,{params}:{params:Promise<{action:string}>}){try{authorize(req);const {action}=await params;

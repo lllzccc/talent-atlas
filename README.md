@@ -53,7 +53,7 @@ npm start
 
 配置 `DATABASE_URL` 后自动建立 `talent_state` 表，以版本化JSONB文档保存工作区，事务行锁防止覆盖。当前为单工作区原型；正式多租户上线前应迁移为员工、年度快照、模型版本、校准事件等关系表并接入组织权限与SSO。此版本没有假装实现完整企业身份系统，操作人标为本地盘点管理员。
 
-本地默认仅监听127.0.0.1。对外部署须配置 `APP_ACCESS_TOKEN`，页面会要求访问令牌（仅存sessionStorage）；API同样要求 `Authorization: Bearer TOKEN`。生产应使用HTTPS和正式身份鉴权。
+本地默认仅监听127.0.0.1。演示部署在未配置 `APP_ACCESS_TOKEN` 时默认开放，并将访问者视为管理员/HR负责人，方便直接体验完整流程；正式环境配置 `APP_ACCESS_TOKEN` 后，页面会要求访问令牌（仅存sessionStorage），API同样要求 `Authorization: Bearer TOKEN`。生产应使用HTTPS和正式身份鉴权。
 
 ## API约定
 
